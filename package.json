@@ -1,12 +1,16 @@
 {
-  "name": "my-app",
+  "name": "sporty-match",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "description": "A social event coordination platform for sports enthusiasts",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
+  },
+  "dependencies": {
+    "feather-icons": "^4.29.0"
   },
   "devDependencies": {
     "vite": "^7.0.4"
