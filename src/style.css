@@ -1,0 +1,82 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Arka plan */
+body {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  width: 100vw;
+
+  background-image: url('/background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Uygulama kutusu */
+#app {
+  background-color: #2c2c2e;
+  border-radius: 1.5rem;
+  padding: 3rem 2rem;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  position: relative;
+}
+
+/* Avatar üstte */
+#app::before {
+  content: "";
+  background: url('/avatar.png') no-repeat center;
+  background-size: cover;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #1e1e1e;
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 3px solid #00b894;
+}
+
+/* Başlıklar */
+h1 {
+  font-size: 2rem;
+  color: #fff;
+  margin-top: 50px;
+  margin-bottom: 1.5rem;
+}
+
+/* Kart / içerik */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Giriş kutuları */
+input {
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  background-color: #3a3a3c;
+  color: #fff;
+  font-size: 1rem;
+}
