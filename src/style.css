@@ -29,7 +29,7 @@ body {
 
 /* Uygulama kutusu */
 #app {
-  background-color: #2c2c2e;
+  background-color: #8f420e;
   border-radius: 1.5rem;
   padding: 3rem 2rem;
   max-width: 400px;
@@ -42,17 +42,17 @@ body {
 /* Avatar üstte */
 #app::before {
   content: "";
-  background: url('/avatar.png') no-repeat center;
+  background: url('/avatar.jpg') no-repeat center;
   background-size: cover;
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background-color: #1e1e1e;
+  background-color: #383737;
   position: absolute;
   top: -40px;
   left: 50%;
   transform: translateX(-50%);
-  border: 3px solid #00b894;
+  border: 3px solid #8f420e;
 }
 
 /* Başlıklar */
@@ -76,7 +76,19 @@ input {
   border-radius: 8px;
   border: none;
   outline: none;
-  background-color: #3a3a3c;
+  background-color: #1e1e1e;
   color: #fff;
   font-size: 1rem;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.login-form input,
+.login-form button {
+  width: 85%;
 }
