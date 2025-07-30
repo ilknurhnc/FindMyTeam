@@ -92,3 +92,84 @@ input {
 .login-form button {
   width: 85%;
 }
+
+/* Tabs */
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.tabs span {
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-bottom: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.tabs span.active {
+  color: #fff;
+  border-bottom: 2px solid #fff;
+}
+
+.tabs .tab-link {
+  text-decoration: none;
+}
+
+.tabs .tab-link span:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Submit button */
+button[type="submit"] {
+  background-color: #ff6b35;
+  color: white;
+  border: none;
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 0.5rem;
+}
+
+button[type="submit"]:hover {
+  background-color: #e55a2e;
+}
+
+/* Forgot password link */
+.forgot {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+  transition: color 0.3s ease;
+}
+
+.forgot:hover {
+  color: #fff;
+}
+
+/* Error messages */
+.error {
+  color: #ff4444;
+  font-size: 0.85rem;
+  margin-top: -0.5rem;
+  margin-bottom: 0.5rem;
+  text-align: left;
+  width: 85%;
+}
+
+/* Input placeholders */
+input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Input focus */
+input:focus {
+  background-color: #2a2a2a;
+  box-shadow: 0 0 0 2px rgba(255, 107, 53, 0.3);
+}
