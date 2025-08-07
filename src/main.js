@@ -1,325 +1,958 @@
-// main.js - Yeni routing sistemi ile
+
 import './style.css'
 
-// Sayfa şablonları
-const pages = {
-  login: `
-    <div class="login-box">
-      <div class="avatar"></div>
-      <div class="tabs">
-        <span class="active" data-tab="login">Giriş</span>
-        <span data-tab="register">Kayıt</span>
-      </div>
-      <form class="login-form" id="loginForm">
-        <input type="email" placeholder="Email" required />
-        <input type="password" placeholder="Şifre" required />
-        <button type="submit">Giriş Yap</button>
-        <a href="#" class="forgot">Şifremi unuttum?</a>
-      </form>
-    </div>
-  `,
-  
-  register: `
-    <div class="login-box">
-      <div class="avatar"></div>
-      <div class="tabs">
-        <span data-tab="login">Giriş</span>
-        <span class="active" data-tab="register">Kayıt</span>
-      </div>
-      <form class="register-form" id="registerForm">
-        <input type="text" placeholder="Ad Soyad" required />
-        <input type="email" placeholder="Email" required />
-        <input type="password" placeholder="Şifre" required />
-        <input type="password" placeholder="Şifre Tekrar" required />
-        <button type="submit">Kayıt Ol</button>
-      </form>
-    </div>
-  `,
-  
-  home: `
-    <div class="main-app">
-      <header class="app-header">
-        <h1>🏃‍♂️ Spor Arkadaşı</h1>
-        <nav class="top-nav">
-          <button class="nav-btn" data-page="home">🏠 Ana Sayfa</button>
-          <button class="nav-btn" data-page="create">➕ Etkinlik Oluştur</button>
-          <button class="nav-btn" data-page="map">📍 Harita</button>
-          <button class="nav-btn" data-page="profile">👤 Profil</button>
-          <button class="nav-btn logout-btn">🚪 Çıkış</button>
-        </nav>
-      </header>
-      
-      <main class="main-content">
-        <div class="welcome">
-          <h2>Yakındaki Etkinlikler</h2>
-          <p>Çevrendeki spor etkinliklerine katıl veya yeni etkinlik başlat!</p>
-        </div>
-        
-        <div class="events-list">
-          <div class="event-card">
-            <div class="event-sport">⚽ Futbol</div>
-            <div class="event-info">
-              <h3>5 vs 5 Futbol Maçı</h3>
-              <p>📍 Atatürk Parkı</p>
-              <p>🕐 Bugün 18:00</p>
-              <p>👥 6/10 kişi</p>
-            </div>
-            <button class="join-btn">Katıl</button>
-          </div>
-          
-          <div class="event-card">
-            <div class="event-sport">🏀 Basketbol</div>
-            <div class="event-info">
-              <h3>Basketbol Turnuvası</h3>
-              <p>📍 Spor Salonu</p>
-              <p>🕐 Yarın 20:00</p>
-              <p>👥 4/8 kişi</p>
-            </div>
-            <button class="join-btn">Katıl</button>
-          </div>
-        </div>
-      </main>
-    </div>
-  `,
-  
-  create: `
-    <div class="main-app">
-      <header class="app-header">
-        <h1>🏃‍♂️ Spor Arkadaşı</h1>
-        <nav class="top-nav">
-          <button class="nav-btn" data-page="home">🏠 Ana Sayfa</button>
-          <button class="nav-btn active" data-page="create">➕ Etkinlik Oluştur</button>
-          <button class="nav-btn" data-page="map">📍 Harita</button>
-          <button class="nav-btn" data-page="profile">👤 Profil</button>
-          <button class="nav-btn logout-btn">🚪 Çıkış</button>
-        </nav>
-      </header>
-      
-      <main class="main-content">
-        <div class="create-event">
-          <h2>Yeni Etkinlik Oluştur</h2>
-          <form class="event-form" id="eventForm">
-            <select required>
-              <option value="">Spor Türü Seçin</option>
-              <option value="football">⚽ Futbol</option>
-              <option value="basketball">🏀 Basketbol</option>
-              <option value="volleyball">🏐 Voleybol</option>
-              <option value="tennis">🎾 Tenis</option>
-              <option value="running">🏃‍♂️ Koşu</option>
-            </select>
-            
-            <input type="text" placeholder="Etkinlik Adı" required />
-            <input type="text" placeholder="Konum (örn: Atatürk Parkı)" required />
-            <input type="datetime-local" required />
-            <input type="number" placeholder="Maksimum Katılımcı Sayısı" min="2" max="50" required />
-            <textarea placeholder="Açıklama (isteğe bağlı)" rows="3"></textarea>
-            
-            <button type="submit">Etkinlik Oluştur</button>
-          </form>
-        </div>
-      </main>
-    </div>
-  `,
-  
-  profile: `
-    <div class="main-app">
-      <header class="app-header">
-        <h1>🏃‍♂️ Spor Arkadaşı</h1>
-        <nav class="top-nav">
-          <button class="nav-btn" data-page="home">🏠 Ana Sayfa</button>
-          <button class="nav-btn" data-page="create">➕ Etkinlik Oluştur</button>
-          <button class="nav-btn" data-page="map">📍 Harita</button>
-          <button class="nav-btn active" data-page="profile">👤 Profil</button>
-          <button class="nav-btn logout-btn">🚪 Çıkış</button>
-        </nav>
-      </header>
-      
-      <main class="main-content">
-        <div class="profile-section">
-          <div class="profile-header">
-            <div class="profile-avatar"></div>
-            <h2>Ahmet Yılmaz</h2>
-            <p>ahmet@email.com</p>
-          </div>
-          
-          <div class="profile-stats">
-            <div class="stat">
-              <h3>5</h3>
-              <p>Katıldığım Etkinlik</p>
-            </div>
-            <div class="stat">
-              <h3>2</h3>
-              <p>Oluşturduğum Etkinlik</p>
-            </div>
-            <div class="stat">
-              <h3>⚽</h3>
-              <p>Favori Spor</p>
-            </div>
-          </div>
-        </div>
-      </main>
-    </div>
-  `
-}
+ // API URL (Backend bağlantısı için)
+ const API_URL = 'https://localhost:7001/api';
 
-// Mevcut kullanıcı durumu (geçici - sonra backend'den gelecek)
-let currentUser = null
+ // Sayfa şablonları
+ const pages = {
+     login: `
+         <div class="auth-container">
+             <div class="auth-box glass">
+                 <div class="auth-avatar">
+                     <i class="fas fa-running"></i>
+                 </div>
+                 <div class="auth-tabs" id="authTabs">
+                     <button class="tab-btn active" data-tab="login">
+                         <i class="fas fa-sign-in-alt"></i> Giriş Yap
+                     </button>
+                     <button class="tab-btn" data-tab="register">
+                         <i class="fas fa-user-plus"></i> Kayıt Ol
+                     </button>
+                 </div>
+                 <form id="loginForm">
+                     <div class="form-group">
+                         <input type="email" class="form-input" placeholder="✉️ E-posta adresiniz" required>
+                     </div>
+                     <div class="form-group">
+                         <input type="password" class="form-input" placeholder="🔒 Şifreniz" required>
+                     </div>
+                     <button type="submit" class="submit-btn">
+                         <span class="btn-text">
+                             <i class="fas fa-sign-in-alt"></i> Giriş Yap
+                         </span>
+                     </button>
+                 </form>
+             </div>
+         </div>
+     `,
 
-// Sayfa routing fonksiyonu
-function navigateTo(page) {
-  const app = document.querySelector('#app')
-  
-  // Eğer giriş yapmamışsa ve login/register sayfası değilse, login'e yönlendir
-  if (!currentUser && page !== 'login' && page !== 'register') {
-    page = 'login'
-  }
-  
-  // Sayfa içeriğini güncelle
-  app.innerHTML = pages[page] || pages['login']
-  
-  // Sayfa özel event listener'larını ekle
-  setupPageEvents(page)
-  
-  // URL'i güncelle (isteğe bağlı)
-  window.location.hash = page
-}
+     register: `
+         <div class="auth-container">
+             <div class="auth-box glass">
+                 <div class="auth-avatar">
+                     <i class="fas fa-user-plus"></i>
+                 </div>
+                 <div class="auth-tabs register-active" id="authTabs">
+                     <button class="tab-btn" data-tab="login">
+                         <i class="fas fa-sign-in-alt"></i> Giriş Yap
+                     </button>
+                     <button class="tab-btn active" data-tab="register">
+                         <i class="fas fa-user-plus"></i> Kayıt Ol
+                     </button>
+                 </div>
+                 <form id="registerForm">
+                     <div class="form-group">
+                         <input type="text" class="form-input" placeholder="👤 Ad Soyad" required>
+                     </div>
+                     <div class="form-group">
+                         <input type="email" class="form-input" placeholder="✉️ E-posta adresiniz" required>
+                     </div>
+                     <div class="form-group">
+                         <input type="password" class="form-input" placeholder="🔒 Şifre" required>
+                     </div>
+                     <div class="form-group">
+                         <input type="password" class="form-input" placeholder="🔒 Şifre Tekrar" required>
+                     </div>
+                     <button type="submit" class="submit-btn">
+                         <span class="btn-text">
+                             <i class="fas fa-user-plus"></i> Kayıt Ol
+                         </span>
+                     </button>
+                 </form>
+             </div>
+         </div>
+     `,
 
-// Her sayfa için özel event listener'lar
-function setupPageEvents(page) {
-  switch(page) {
-    case 'login':
-      setupLoginEvents()
-      break
-    case 'register':
-      setupRegisterEvents()
-      break
-    case 'home':
-      setupHomeEvents()
-      break
-    case 'create':
-      setupCreateEvents()
-      break
-  }
-  
-  // Genel navigation event'leri
-  setupNavigationEvents()
-}
+     home: `
+         <header class="app-header">
+             <div class="header-content">
+                 <a href="#" class="logo">
+                     <div class="logo-icon">
+                         <i class="fas fa-running"></i>
+                     </div>
+                     <span>Spor Arkadaşı</span>
+                 </a>
+                 <nav class="nav-menu">
+                     <button class="nav-btn active" data-page="home">
+                         <i class="fas fa-home"></i> Ana Sayfa
+                     </button>
+                     <button class="nav-btn" data-page="create">
+                         <i class="fas fa-plus-circle"></i> Etkinlik Oluştur
+                     </button>
+                     <button class="nav-btn" data-page="map">
+                         <i class="fas fa-map-marker-alt"></i> Harita
+                     </button>
+                     <button class="nav-btn" data-page="profile">
+                         <i class="fas fa-user"></i> Profil
+                     </button>
+                     <button class="nav-btn logout-btn">
+                         <i class="fas fa-sign-out-alt"></i> Çıkış
+                     </button>
+                 </nav>
+             </div>
+         </header>
+         
+         <main class="main-content">
+             <section class="hero">
+                 <h1><i class="fas fa-fire"></i> Spor Tutkunları Buluşuyor!</h1>
+                 <p>Çevrendeki sporcularla tanış, etkinliklere katıl ve aktif yaşamının tadını çıkar!</p>
+                 <div class="hero-stats">
+                     <div class="stat-item">
+                         <span class="stat-number" id="activeEvents">0</span>
+                         <span class="stat-label">Aktif Etkinlik</span>
+                     </div>
+                     <div class="stat-item">
+                         <span class="stat-number" id="totalUsers">0</span>
+                         <span class="stat-label">Kayıtlı Kullanıcı</span>
+                     </div>
+                     <div class="stat-item">
+                         <span class="stat-number" id="sportsCount">8</span>
+                         <span class="stat-label">Spor Dalı</span>
+                     </div>
+                 </div>
+             </section>
 
-// Login sayfası event'leri
-function setupLoginEvents() {
-  // Tab switching
-  document.querySelectorAll('[data-tab]').forEach(tab => {
-    tab.addEventListener('click', (e) => {
-      const targetPage = e.target.dataset.tab
-      navigateTo(targetPage)
-    })
-  })
-  
-  // Login form
-  const loginForm = document.querySelector('#loginForm')
-  if (loginForm) {
-    loginForm.addEventListener('submit', (e) => {
-      e.preventDefault()
-      
-      // Geçici - her girişi kabul et
-      currentUser = {
-        name: 'Ahmet Yılmaz',
-        email: 'ahmet@email.com'
-      }
-      
-      alert('Giriş başarılı!')
-      navigateTo('home')
-    })
-  }
-}
+             <section>
+                 <h2 class="section-title">🔥 Popüler Etkinlikler</h2>
+                 <div class="events-grid" id="eventsGrid">
+                     <!-- Etkinlikler buraya yüklenecek -->
+                 </div>
+             </section>
+         </main>
+     `,
 
-// Register sayfası event'leri
-function setupRegisterEvents() {
-  // Tab switching
-  document.querySelectorAll('[data-tab]').forEach(tab => {
-    tab.addEventListener('click', (e) => {
-      const targetPage = e.target.dataset.tab
-      navigateTo(targetPage)
-    })
-  })
-  
-  // Register form
-  const registerForm = document.querySelector('#registerForm')
-  if (registerForm) {
-    registerForm.addEventListener('submit', (e) => {
-      e.preventDefault()
-      
-      // Basit şifre kontrolü
-      const passwords = registerForm.querySelectorAll('input[type="password"]')
-      if (passwords[0].value !== passwords[1].value) {
-        alert('Şifreler eşleşmiyor!')
-        return
-      }
-      
-      alert('Kayıt başarılı! Şimdi giriş yapabilirsiniz.')
-      navigateTo('login')
-    })
-  }
-}
+     create: `
+         <header class="app-header">
+             <div class="header-content">
+                 <a href="#" class="logo">
+                     <div class="logo-icon">
+                         <i class="fas fa-running"></i>
+                     </div>
+                     <span>Spor Arkadaşı</span>
+                 </a>
+                 <nav class="nav-menu">
+                     <button class="nav-btn" data-page="home">
+                         <i class="fas fa-home"></i> Ana Sayfa
+                     </button>
+                     <button class="nav-btn active" data-page="create">
+                         <i class="fas fa-plus-circle"></i> Etkinlik Oluştur
+                     </button>
+                     <button class="nav-btn" data-page="map">
+                         <i class="fas fa-map-marker-alt"></i> Harita
+                     </button>
+                     <button class="nav-btn" data-page="profile">
+                         <i class="fas fa-user"></i> Profil
+                     </button>
+                     <button class="nav-btn logout-btn">
+                         <i class="fas fa-sign-out-alt"></i> Çıkış
+                     </button>
+                 </nav>
+             </div>
+         </header>
+         
+         <main class="main-content">
+             <section>
+                 <h2 class="section-title"><i class="fas fa-magic"></i> Yeni Etkinlik Oluştur</h2>
+                 <div class="create-form">
+                     <form id="createEventForm">
+                         <div class="form-row">
+                             <div class="form-group">
+                                 <select class="form-select" name="sportType" required>
+                                     <option value="">🏃‍♂️ Spor Türü Seçin</option>
+                                     <option value="football">⚽ Futbol</option>
+                                     <option value="basketball">🏀 Basketbol</option>
+                                     <option value="volleyball">🏐 Voleybol</option>
+                                     <option value="tennis">🎾 Tenis</option>
+                                     <option value="running">🏃‍♂️ Koşu</option>
+                                     <option value="cycling">🚴‍♂️ Bisiklet</option>
+                                     <option value="swimming">🏊‍♂️ Yüzme</option>
+                                     <option value="badminton">🏸 Badminton</option>
+                                 </select>
+                             </div>
+                             <div class="form-group">
+                                 <input type="text" class="form-input" name="title" placeholder="🏆 Etkinlik Adı" required>
+                             </div>
+                         </div>
+                         
+                         <div class="form-row">
+                             <div class="form-group">
+                                 <input type="text" class="form-input" name="location" placeholder="📍 Konum (örn: Atatürk Parkı)" required>
+                             </div>
+                             <div class="form-group">
+                                 <input type="datetime-local" class="form-input" name="eventDate" required>
+                             </div>
+                         </div>
+                         
+                         <div class="form-row">
+                             <div class="form-group">
+                                 <input type="number" class="form-input" name="maxParticipants" placeholder="👥 Maksimum Katılımcı" min="2" max="50" required>
+                             </div>
+                             <div class="form-group">
+                                 <select class="form-select" name="skillLevel" required>
+                                     <option value="">📊 Seviye Seçin</option>
+                                     <option value="beginner">🌱 Başlangıç</option>
+                                     <option value="intermediate">⭐ Orta</option>
+                                     <option value="advanced">🏆 İleri</option>
+                                     <option value="mixed">🎯 Karma</option>
+                                 </select>
+                             </div>
+                         </div>
+                         
+                         <div class="form-group">
+                             <textarea class="form-textarea" name="description" placeholder="📝 Etkinlik açıklaması (isteğe bağlı)"></textarea>
+                         </div>
+                         
+                         <button type="submit" class="submit-btn">
+                             <span class="btn-text">
+                                 <i class="fas fa-rocket"></i> Etkinliği Oluştur
+                             </span>
+                         </button>
+                     </form>
+                 </div>
+             </section>
+         </main>
+     `,
 
-// Ana sayfa event'leri
-function setupHomeEvents() {
-  // Join button'ları
-  document.querySelectorAll('.join-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      alert('Etkinliğe katıldınız!')
-      btn.textContent = 'Ayrıl'
-      btn.classList.add('joined')
-    })
-  })
-}
+     map: `
+         <header class="app-header">
+             <div class="header-content">
+                 <a href="#" class="logo">
+                     <div class="logo-icon">
+                         <i class="fas fa-running"></i>
+                     </div>
+                     <span>Spor Arkadaşı</span>
+                 </a>
+                 <nav class="nav-menu">
+                     <button class="nav-btn" data-page="home">
+                         <i class="fas fa-home"></i> Ana Sayfa
+                     </button>
+                     <button class="nav-btn" data-page="create">
+                         <i class="fas fa-plus-circle"></i> Etkinlik Oluştur
+                     </button>
+                     <button class="nav-btn active" data-page="map">
+                         <i class="fas fa-map-marker-alt"></i> Harita
+                     </button>
+                     <button class="nav-btn" data-page="profile">
+                         <i class="fas fa-user"></i> Profil
+                     </button>
+                     <button class="nav-btn logout-btn">
+                         <i class="fas fa-sign-out-alt"></i> Çıkış
+                     </button>
+                 </nav>
+             </div>
+         </header>
+         
+         <main class="main-content">
+             <section>
+                 <h2 class="section-title"><i class="fas fa-globe-americas"></i> Etkinlik Haritası</h2>
+                 <div class="map-container">
+                     <div class="map-placeholder">
+                         <i class="fas fa-map-marked-alt"></i>
+                         <h3>Harita Entegrasyonu</h3>
+                         <p>Google Maps API ile etkinlikleri harita üzerinde görüntüleyebileceksiniz.</p>
+                         <p>Yakında aktif olacak!</p>
+                     </div>
+                 </div>
+             </section>
+         </main>
+     `,
 
-// Etkinlik oluşturma sayfası event'leri
-function setupCreateEvents() {
-  const eventForm = document.querySelector('#eventForm')
-  if (eventForm) {
-    eventForm.addEventListener('submit', (e) => {
-      e.preventDefault()
-      alert('Etkinlik başarıyla oluşturuldu!')
-      navigateTo('home')
-    })
-  }
-}
+     profile: `
+         <header class="app-header">
+             <div class="header-content">
+                 <a href="#" class="logo">
+                     <div class="logo-icon">
+                         <i class="fas fa-running"></i>
+                     </div>
+                     <span>Spor Arkadaşı</span>
+                 </a>
+                 <nav class="nav-menu">
+                     <button class="nav-btn" data-page="home">
+                         <i class="fas fa-home"></i> Ana Sayfa
+                     </button>
+                     <button class="nav-btn" data-page="create">
+                         <i class="fas fa-plus-circle"></i> Etkinlik Oluştur
+                     </button>
+                     <button class="nav-btn" data-page="map">
+                         <i class="fas fa-map-marker-alt"></i> Harita
+                     </button>
+                     <button class="nav-btn active" data-page="profile">
+                         <i class="fas fa-user"></i> Profil
+                     </button>
+                     <button class="nav-btn logout-btn">
+                         <i class="fas fa-sign-out-alt"></i> Çıkış
+                     </button>
+                 </nav>
+             </div>
+         </header>
+         
+         <main class="main-content">
+             <div class="profile-container">
+                 <section class="profile-header">
+                     <div class="profile-avatar">
+                         <i class="fas fa-user-athlete"></i>
+                     </div>
+                     <h2 class="profile-name" id="profileName">Kullanıcı</h2>
+                     <p class="profile-email" id="profileEmail">email@example.com</p>
+                 </section>
 
-// Navigation event'leri
-function setupNavigationEvents() {
-  // Nav button'ları
-  document.querySelectorAll('[data-page]').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const page = e.target.dataset.page
-      navigateTo(page)
-    })
-  })
-  
-  // Logout button
-  const logoutBtn = document.querySelector('.logout-btn')
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
-      currentUser = null
-      navigateTo('login')
-    })
-  }
-}
+                 <section>
+                     <h2 class="section-title"><i class="fas fa-chart-line"></i> İstatistiklerim</h2>
+                     <div class="stats-grid">
+                         <div class="stat-card">
+                             <div class="stat-icon">
+                                 <i class="fas fa-calendar-check"></i>
+                             </div>
+                             <div class="stat-value" id="joinedEvents">0</div>
+                             <div class="stat-description">Katıldığım Etkinlik</div>
+                         </div>
+                         <div class="stat-card">
+                             <div class="stat-icon">
+                                 <i class="fas fa-plus-circle"></i>
+                             </div>
+                             <div class="stat-value" id="createdEvents">0</div>
+                             <div class="stat-description">Oluşturduğum Etkinlik</div>
+                         </div>
+                         <div class="stat-card">
+                             <div class="stat-icon">
+                                 <i class="fas fa-trophy"></i>
+                             </div>
+                             <div class="stat-value" id="completedEvents">0</div>
+                             <div class="stat-description">Tamamlanan Etkinlik</div>
+                         </div>
+                         <div class="stat-card">
+                             <div class="stat-icon">
+                                 <i class="fas fa-users"></i>
+                             </div>
+                             <div class="stat-value" id="sportFriends">0</div>
+                             <div class="stat-description">Spor Arkadaşı</div>
+                         </div>
+                     </div>
+                 </section>
+             </div>
+         </main>
+     `
+ };
 
-// Uygulama başlatma
-function initApp() {
-  // URL'den sayfa al veya login'e git
-  const hash = window.location.hash.slice(1)
-  const initialPage = hash || 'login'
-  
-  navigateTo(initialPage)
-}
+ // Uygulama durumu
+ let currentUser = null;
+ let events = [];
 
-// Browser back/forward button desteği
-window.addEventListener('hashchange', () => {
-  const page = window.location.hash.slice(1) || 'login'
-  navigateTo(page)
-})
+ // Spor ikonu mapping
+ const sportIcons = {
+     football: '⚽',
+     basketball: '🏀',
+     volleyball: '🏐',
+     tennis: '🎾',
+     running: '🏃‍♂️',
+     cycling: '🚴‍♂️',
+     swimming: '🏊‍♂️',
+     badminton: '🏸'
+ };
 
-// Uygulamayı başlat
-initApp()
+ // Seviye mapping
+ const skillLevels = {
+     beginner: '🌱 Başlangıç',
+     intermediate: '⭐ Orta',
+     advanced: '🏆 İleri',
+     mixed: '🎯 Karma'
+ };
+
+ // API çağrıları
+ const api = {
+     async login(email, password) {
+         try {
+             const response = await fetch(`${API_URL}/auth/login`, {
+                 method: 'POST',
+                 headers: {
+                     'Content-Type': 'application/json',
+                 },
+                 body: JSON.stringify({ email, password })
+             });
+             
+             if (!response.ok) {
+                 throw new Error('Giriş başarısız');
+             }
+             
+             return await response.json();
+         } catch (error) {
+             // Geçici olarak mock data döndür
+             return {
+                 success: true,
+                 user: {
+                     id: 1,
+                     name: 'Ahmet Yılmaz',
+                     email: email
+                 },
+                 token: 'mock-token'
+             };
+         }
+     },
+
+     async register(userData) {
+         try {
+             const response = await fetch(`${API_URL}/auth/register`, {
+                 method: 'POST',
+                 headers: {
+                     'Content-Type': 'application/json',
+                 },
+                 body: JSON.stringify(userData)
+             });
+             
+             if (!response.ok) {
+                 throw new Error('Kayıt başarısız');
+             }
+             
+             return await response.json();
+         } catch (error) {
+             // Geçici olarak mock data döndür
+             return {
+                 success: true,
+                 message: 'Kayıt başarılı'
+             };
+         }
+     },
+
+     async getEvents() {
+         try {
+             const response = await fetch(`${API_URL}/events`);
+             if (!response.ok) {
+                 throw new Error('Etkinlikler yüklenemedi');
+             }
+             return await response.json();
+         } catch (error) {
+             // Mock events data
+             return [
+                 {
+                     id: 1,
+                     title: '5vs5 Futbol Maçı',
+                     sportType: 'football',
+                     location: 'Atatürk Parkı',
+                     eventDate: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
+                     maxParticipants: 10,
+                     currentParticipants: 6,
+                     skillLevel: 'intermediate',
+                     description: 'Eğlenceli futbol maçı için katılımcılar bekliyoruz!',
+                     creatorName: 'Mehmet Özkan'
+                 },
+                 {
+                     id: 2,
+                     title: 'Basketbol Turnuvası',
+                     sportType: 'basketball',
+                     location: 'Spor Salonu',
+                     eventDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+                     maxParticipants: 8,
+                     currentParticipants: 4,
+                     skillLevel: 'advanced',
+                     description: 'Basketbol severler için turnuva organizasyonu',
+                     creatorName: 'Ayşe Demir'
+                 },
+                 {
+                     id: 3,
+                     title: 'Tenis Partneri Arıyorum',
+                     sportType: 'tennis',
+                     location: 'Tenis Kulübü',
+                     eventDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+                     maxParticipants: 2,
+                     currentParticipants: 1,
+                     skillLevel: 'beginner',
+                     description: 'Yeni başlayan tenis oyuncusu partner arıyor',
+                     creatorName: 'Ali Yıldız'
+                 },
+                 {
+                     id: 4,
+                     title: 'Sabah Koşusu Grubu',
+                     sportType: 'running',
+                     location: 'Maçka Parkı',
+                     eventDate: new Date(Date.now() + 12 * 60 * 60 * 1000).toISOString(),
+                     maxParticipants: 15,
+                     currentParticipants: 8,
+                     skillLevel: 'mixed',
+                     description: 'Her seviyeden koşucu hoş geldin!',
+                     creatorName: 'Fatma Kaya'
+                 }
+             ];
+         }
+     },
+
+     async createEvent(eventData) {
+         try {
+             const response = await fetch(`${API_URL}/events`, {
+                 method: 'POST',
+                 headers: {
+                     'Content-Type': 'application/json',
+                     'Authorization': `Bearer ${localStorage.getItem('token')}`
+                 },
+                 body: JSON.stringify(eventData)
+             });
+             
+             if (!response.ok) {
+                 throw new Error('Etkinlik oluşturulamadı');
+             }
+             
+             return await response.json();
+         } catch (error) {
+             // Mock success
+             return {
+                 success: true,
+                 message: 'Etkinlik başarıyla oluşturuldu',
+                 event: { id: Date.now(), ...eventData }
+             };
+         }
+     },
+
+     async joinEvent(eventId) {
+         try {
+             const response = await fetch(`${API_URL}/events/${eventId}/join`, {
+                 method: 'POST',
+                 headers: {
+                     'Authorization': `Bearer ${localStorage.getItem('token')}`
+                 }
+             });
+             
+             if (!response.ok) {
+                 throw new Error('Etkinliğe katılınamadı');
+             }
+             
+             return await response.json();
+         } catch (error) {
+             // Mock success
+             return {
+                 success: true,
+                 message: 'Etkinliğe başarıyla katıldınız'
+             };
+         }
+     }
+ };
+
+ // Bildirim sistemi
+ function showNotification(message, type = 'success') {
+     const existing = document.querySelector('.notification');
+     if (existing) existing.remove();
+
+     const notification = document.createElement('div');
+     notification.className = `notification ${type}`;
+     notification.innerHTML = `
+         <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
+         ${message}
+     `;
+     
+     document.body.appendChild(notification);
+     
+     setTimeout(() => notification.classList.add('show'), 100);
+     setTimeout(() => {
+         notification.classList.remove('show');
+         setTimeout(() => notification.remove(), 400);
+     }, 4000);
+ }
+
+ // Loading ekranı
+ function hideLoadingScreen() {
+     const loadingScreen = document.getElementById('loadingScreen');
+     setTimeout(() => {
+         loadingScreen.classList.add('hidden');
+         setTimeout(() => loadingScreen.remove(), 500);
+     }, 1000);
+ }
+
+ // Sayfa navigasyonu
+ function navigateTo(page) {
+     const app = document.getElementById('app');
+     
+     if (!currentUser && !['login', 'register'].includes(page)) {
+         page = 'login';
+     }
+     
+     app.innerHTML = pages[page] || pages.login;
+     setupPageEvents(page);
+     window.location.hash = page;
+ }
+
+ // Sayfa event'leri
+ function setupPageEvents(page) {
+     switch(page) {
+         case 'login':
+             setupAuthEvents();
+             break;
+         case 'register':
+             setupAuthEvents();
+             break;
+         case 'home':
+             setupHomeEvents();
+             loadEvents();
+             break;
+         case 'create':
+             setupCreateEvents();
+             break;
+         case 'profile':
+             setupProfileEvents();
+             break;
+     }
+     
+     setupNavigationEvents();
+ }
+
+ // Auth sayfası event'leri
+ function setupAuthEvents() {
+     // Tab switching
+     document.querySelectorAll('[data-tab]').forEach(tab => {
+         tab.addEventListener('click', (e) => {
+             navigateTo(e.target.dataset.tab);
+         });
+     });
+
+     // Login form
+     const loginForm = document.getElementById('loginForm');
+     if (loginForm) {
+         loginForm.addEventListener('submit', async (e) => {
+             e.preventDefault();
+             
+             const submitBtn = loginForm.querySelector('button[type="submit"]');
+             submitBtn.classList.add('btn-loading');
+             
+             const formData = new FormData(loginForm);
+             const email = formData.get('email') || loginForm.querySelector('input[type="email"]').value;
+             const password = formData.get('password') || loginForm.querySelector('input[type="password"]').value;
+             
+             try {
+                 const response = await api.login(email, password);
+                 
+                 if (response.success) {
+                     currentUser = response.user;
+                     localStorage.setItem('token', response.token);
+                     localStorage.setItem('user', JSON.stringify(response.user));
+                     
+                     showNotification('🎉 Hoş geldiniz! Giriş başarılı.');
+                     setTimeout(() => navigateTo('home'), 1000);
+                 }
+             } catch (error) {
+                 showNotification('❌ Giriş yapılamadı. Lütfen bilgilerinizi kontrol edin.', 'error');
+             } finally {
+                 submitBtn.classList.remove('btn-loading');
+             }
+         });
+     }
+
+     // Register form
+     const registerForm = document.getElementById('registerForm');
+     if (registerForm) {
+         registerForm.addEventListener('submit', async (e) => {
+             e.preventDefault();
+             
+             const submitBtn = registerForm.querySelector('button[type="submit"]');
+             const inputs = registerForm.querySelectorAll('input');
+             const passwords = registerForm.querySelectorAll('input[type="password"]');
+             
+             // Şifre kontrolü
+             if (passwords[0].value !== passwords[1].value) {
+                 showNotification('❌ Şifreler eşleşmiyor!', 'error');
+                 return;
+             }
+             
+             if (passwords[0].value.length < 6) {
+                 showNotification('❌ Şifre en az 6 karakter olmalı!', 'error');
+                 return;
+             }
+             
+             submitBtn.classList.add('btn-loading');
+             
+             const userData = {
+                 name: inputs[0].value,
+                 email: inputs[1].value,
+                 password: inputs[2].value
+             };
+             
+             try {
+                 const response = await api.register(userData);
+                 
+                 if (response.success) {
+                     showNotification('✅ Kayıt başarılı! Şimdi giriş yapabilirsiniz.');
+                     setTimeout(() => navigateTo('login'), 1500);
+                 }
+             } catch (error) {
+                 showNotification('❌ Kayıt işlemi başarısız. Lütfen tekrar deneyin.', 'error');
+             } finally {
+                 submitBtn.classList.remove('btn-loading');
+             }
+         });
+     }
+ }
+
+ // Ana sayfa event'leri
+ function setupHomeEvents() {
+     // İstatistikleri güncelle
+     setTimeout(() => {
+         document.getElementById('activeEvents').textContent = '12';
+         document.getElementById('totalUsers').textContent = '247';
+     }, 1000);
+ }
+
+ // Etkinlikleri yükle
+ async function loadEvents() {
+     try {
+         events = await api.getEvents();
+         renderEvents(events);
+     } catch (error) {
+         showNotification('❌ Etkinlikler yüklenemedi.', 'error');
+     }
+ }
+
+ // Etkinlikleri render et
+ function renderEvents(eventsData) {
+     const eventsGrid = document.getElementById('eventsGrid');
+     if (!eventsGrid) return;
+
+     eventsGrid.innerHTML = eventsData.map(event => {
+         const eventDate = new Date(event.eventDate);
+         const formattedDate = eventDate.toLocaleDateString('tr-TR', {
+             day: 'numeric',
+             month: 'long',
+             hour: '2-digit',
+             minute: '2-digit'
+         });
+
+         return `
+             <div class="event-card" data-event-id="${event.id}">
+                 <div class="event-header">
+                     <div class="event-icon">
+                         ${sportIcons[event.sportType] || '🏃‍♂️'}
+                     </div>
+                     <h3 class="event-title">${event.title}</h3>
+                 </div>
+                 
+                 <div class="event-details">
+                     <div class="event-detail">
+                         <i class="fas fa-map-marker-alt"></i>
+                         <span>${event.location}</span>
+                     </div>
+                     <div class="event-detail">
+                         <i class="fas fa-clock"></i>
+                         <span>${formattedDate}</span>
+                     </div>
+                     <div class="event-detail">
+                         <i class="fas fa-users"></i>
+                         <span>${event.currentParticipants}/${event.maxParticipants} kişi</span>
+                     </div>
+                     <div class="event-detail">
+                         <i class="fas fa-chart-bar"></i>
+                         <span>${skillLevels[event.skillLevel]}</span>
+                     </div>
+                     <div class="event-detail">
+                         <i class="fas fa-user-circle"></i>
+                         <span>Organizatör: ${event.creatorName}</span>
+                     </div>
+                 </div>
+                 
+                 <div class="event-actions">
+                     <button class="action-btn join-btn" onclick="joinEvent(${event.id})">
+                         <i class="fas fa-hand-rock"></i> Katıl
+                     </button>
+                     <button class="action-btn details-btn" onclick="showEventDetails(${event.id})">
+                         <i class="fas fa-info-circle"></i> Detay
+                     </button>
+                 </div>
+             </div>
+         `;
+     }).join('');
+ }
+
+ // Etkinliğe katıl
+ async function joinEvent(eventId) {
+     try {
+         const response = await api.joinEvent(eventId);
+         if (response.success) {
+             showNotification('🎉 Etkinliğe başarıyla katıldınız!');
+             // UI güncelle
+             const eventCard = document.querySelector(`[data-event-id="${eventId}"]`);
+             const joinBtn = eventCard.querySelector('.join-btn');
+             joinBtn.innerHTML = '<i class="fas fa-times"></i> Ayrıl';
+             joinBtn.classList.add('joined');
+             joinBtn.onclick = () => leaveEvent(eventId);
+         }
+     } catch (error) {
+         showNotification('❌ Etkinliğe katılınamadı.', 'error');
+     }
+ }
+
+ // Etkinlikten ayrıl
+ async function leaveEvent(eventId) {
+     try {
+         showNotification('👋 Etkinlikten ayrıldınız.');
+         // UI güncelle
+         const eventCard = document.querySelector(`[data-event-id="${eventId}"]`);
+         const joinBtn = eventCard.querySelector('.join-btn');
+         joinBtn.innerHTML = '<i class="fas fa-hand-rock"></i> Katıl';
+         joinBtn.classList.remove('joined');
+         joinBtn.onclick = () => joinEvent(eventId);
+     } catch (error) {
+         showNotification('❌ İşlem başarısız.', 'error');
+     }
+ }
+
+ // Etkinlik detaylarını göster
+ function showEventDetails(eventId) {
+     const event = events.find(e => e.id === eventId);
+     if (event) {
+         alert(`
+Etkinlik: ${event.title}
+Açıklama: ${event.description || 'Açıklama bulunmuyor.'}
+Konum: ${event.location}
+Tarih: ${new Date(event.eventDate).toLocaleString('tr-TR')}
+Seviye: ${skillLevels[event.skillLevel]}
+Katılımcılar: ${event.currentParticipants}/${event.maxParticipants}
+Organizatör: ${event.creatorName}
+         `);
+     }
+ }
+
+ // Etkinlik oluşturma event'leri
+ function setupCreateEvents() {
+     const createForm = document.getElementById('createEventForm');
+     if (createForm) {
+         createForm.addEventListener('submit', async (e) => {
+             e.preventDefault();
+             
+             const submitBtn = createForm.querySelector('button[type="submit"]');
+             submitBtn.classList.add('btn-loading');
+             
+             const formData = new FormData(createForm);
+             const eventData = {
+                 title: formData.get('title'),
+                 sportType: formData.get('sportType'),
+                 location: formData.get('location'),
+                 eventDate: formData.get('eventDate'),
+                 maxParticipants: parseInt(formData.get('maxParticipants')),
+                 skillLevel: formData.get('skillLevel'),
+                 description: formData.get('description')
+             };
+             
+             try {
+                 const response = await api.createEvent(eventData);
+                 
+                 if (response.success) {
+                     showNotification('🚀 Etkinlik başarıyla oluşturuldu!');
+                     setTimeout(() => navigateTo('home'), 1500);
+                 }
+             } catch (error) {
+                 showNotification('❌ Etkinlik oluşturulamadı.', 'error');
+             } finally {
+                 submitBtn.classList.remove('btn-loading');
+             }
+         });
+     }
+ }
+
+ // Profil event'leri
+ function setupProfileEvents() {
+     if (currentUser) {
+         document.getElementById('profileName').textContent = currentUser.name;
+         document.getElementById('profileEmail').textContent = currentUser.email;
+         
+         // Mock istatistikler
+         setTimeout(() => {
+             document.getElementById('joinedEvents').textContent = '5';
+             document.getElementById('createdEvents').textContent = '2';
+             document.getElementById('completedEvents').textContent = '3';
+             document.getElementById('sportFriends').textContent = '12';
+         }, 500);
+     }
+ }
+
+ // Navigation event'leri
+ function setupNavigationEvents() {
+     // Nav button'ları
+     document.querySelectorAll('[data-page]').forEach(btn => {
+         btn.addEventListener('click', (e) => {
+             const page = e.target.dataset.page || e.target.closest('[data-page]').dataset.page;
+             navigateTo(page);
+         });
+     });
+     
+     // Logout button
+     const logoutBtn = document.querySelector('.logout-btn');
+     if (logoutBtn) {
+         logoutBtn.addEventListener('click', () => {
+             currentUser = null;
+             localStorage.removeItem('token');
+             localStorage.removeItem('user');
+             showNotification('👋 Başarıyla çıkış yaptınız.');
+             setTimeout(() => navigateTo('login'), 1000);
+         });
+     }
+ }
+
+ // Uygulama başlatma
+ function initApp() {
+     // Saklanan kullanıcıyı kontrol et
+     const savedUser = localStorage.getItem('user');
+     if (savedUser) {
+         currentUser = JSON.parse(savedUser);
+     }
+     
+     // URL'den sayfa al
+     const hash = window.location.hash.slice(1);
+     const initialPage = hash || (currentUser ? 'home' : 'login');
+     
+     navigateTo(initialPage);
+     hideLoadingScreen();
+ }
+
+ // Browser navigation
+ window.addEventListener('hashchange', () => {
+     const page = window.location.hash.slice(1) || (currentUser ? 'home' : 'login');
+     navigateTo(page);
+ });
+
+ // Klavye kısayolları
+ document.addEventListener('keydown', (e) => {
+     if (!currentUser) return;
+     
+     if (e.altKey) {
+         switch(e.key) {
+             case 'h':
+                 e.preventDefault();
+                 navigateTo('home');
+                 break;
+             case 'c':
+                 e.preventDefault();
+                 navigateTo('create');
+                 break;
+             case 'p':
+                 e.preventDefault();
+                 navigateTo('profile');
+                 break;
+             case 'm':
+                 e.preventDefault();
+                 navigateTo('map');
+                 break;
+         }
+     }
+ });
+
+ // Service worker için offline destek (isteğe bağlı)
+ if ('serviceWorker' in navigator) {
+     window.addEventListener('load', () => {
+         navigator.serviceWorker.register('/sw.js')
+             .then(registration => console.log('SW registered'))
+             .catch(error => console.log('SW registration failed'));
+     });
+ }
+
+ // Global fonksiyonlar (onclick için)
+ window.joinEvent = joinEvent;
+ window.leaveEvent = leaveEvent;
+ window.showEventDetails = showEventDetails;
+
+ // Uygulamayı başlat
+ document.addEventListener('DOMContentLoaded', initApp);
