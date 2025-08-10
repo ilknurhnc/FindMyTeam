@@ -1,151 +1,98 @@
-const API_URL = 'https://localhost:7001/api';
+// Backend portunu kontrol edin - launchSettings.json'dan
+const API_URL = 'http://localhost:5144/api'; // HTTP portu kullanın
 
 class ApiService {
-  async login(email, password) {
+  getAuthHeaders() {
+    const token = localStorage.getItem('token');
+    return {
+      'Content-Type': 'application/json',
+      ...(token && { 'Authorization': `Bearer ${token}` })
+    };
+  }
+
+  async makeRequest(url, options = {}) {
     try {
-      const response = await fetch(`${API_URL}/auth/login`, {
-        method: 'POST',
+      const response = await fetch(`${API_URL}${url}`, {
+        ...options,
         headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password })
+          ...this.getAuthHeaders(),
+          ...options.headers
+        }
       });
+
+      // Response'u text olarak al
+      const text = await response.text();
       
-      if (!response.ok) {
-        throw new Error('Giriş başarısız');
+      // Boş response kontrolü
+      if (!text) {
+        if (response.ok) {
+          return { success: true };
+        } else {
+          throw new Error(`HTTP ${response.status}`);
+        }
       }
-      
-      return await response.json();
+
+      // JSON parse et
+      const data = JSON.parse(text);
+
+      if (!response.ok) {
+        throw new Error(data.message || `HTTP ${response.status}`);
+      }
+
+      return data;
     } catch (error) {
-      // Mock data for development
-      return {
-        success: true,
-        user: {
-          id: 1,
-          name: 'İlknur Hançer',
-          email: email
-        },
-        token: 'mock-token'
-      };
+      console.error(`API Error (${url}):`, error);
+      throw error;
     }
+  }
+
+  async login(email, password) {
+    return await this.makeRequest('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password })
+    });
   }
 
   async register(userData) {
-    try {
-      const response = await fetch(`${API_URL}/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData)
-      });
-      
-      if (!response.ok) {
-        throw new Error('Kayıt başarısız');
-      }
-      
-      return await response.json();
-    } catch (error) {
-      return {
-        success: true,
-        message: 'Kayıt başarılı'
-      };
-    }
+    return await this.makeRequest('/auth/register', {
+      method: 'POST',
+      body: JSON.stringify(userData)
+    });
   }
 
   async getEvents() {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${API_URL}/events`, {
-        headers: {
-          ...(token && { 'Authorization': `Bearer ${token}` })
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error('Etkinlikler yüklenemedi');
-      }
-      
-      return await response.json();
-    } catch (error) {
-      // Mock events data
-      return [
-        {
-          id: 1,
-          title: '5vs5 Futbol Maçı',
-          sportType: 'football',
-          location: 'Atatürk Parkı',
-          eventDate: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
-          maxParticipants: 10,
-          currentParticipants: 6,
-          skillLevel: 'intermediate',
-          description: 'Eğlenceli futbol maçı için katılımcılar bekliyoruz!',
-          creatorName: 'Mehmet Özkan',
-          isJoined: false
-        },
-        {
-          id: 2,
-          title: 'Basketbol Turnuvası',
-          sportType: 'basketball',
-          location: 'Spor Salonu',
-          eventDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-          maxParticipants: 8,
-          currentParticipants: 4,
-          skillLevel: 'advanced',
-          description: 'Basketbol severler için turnuva organizasyonu',
-          creatorName: 'Ayşe Demir',
-          isJoined: false
-        }
-      ];
-    }
+    return await this.makeRequest('/events');
+  }
+
+  async getEvent(id) {
+    return await this.makeRequest(`/events/${id}`);
   }
 
   async createEvent(eventData) {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${API_URL}/events`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(eventData)
-      });
-      
-      if (!response.ok) {
-        throw new Error('Etkinlik oluşturulamadı');
-      }
-      
-      return await response.json();
-    } catch (error) {
-      return {
-        success: true,
-        message: 'Etkinlik başarıyla oluşturuldu'
-      };
-    }
+    return await this.makeRequest('/events', {
+      method: 'POST',
+      body: JSON.stringify(eventData)
+    });
   }
 
   async joinEvent(eventId) {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${API_URL}/events/${eventId}/join`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error('Etkinliğe katılınamadı');
-      }
-      
-      return await response.json();
-    } catch (error) {
-      return {
-        success: true,
-        message: 'Etkinliğe başarıyla katıldınız'
-      };
-    }
+    return await this.makeRequest(`/events/${eventId}/join`, {
+      method: 'POST'
+    });
+  }
+
+  async leaveEvent(eventId) {
+    return await this.makeRequest(`/events/${eventId}/leave`, {
+      method: 'POST'
+    });
+  }
+
+  async getMyEvents() {
+    return await this.makeRequest('/events/my-events');
+  }
+
+  async getStats() {
+    return await this.makeRequest('/stats');
   }
 }
 

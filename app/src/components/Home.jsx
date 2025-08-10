@@ -8,69 +8,80 @@ export default function Home() {
   const [stats, setStats] = useState({
     activeEvents: 0,
     totalUsers: 0,
-    sportsCount: 8
+    totalEvents: 0,
+    totalParticipants: 0
   });
   const [loading, setLoading] = useState(true);
   const { showNotification } = useNotification();
 
   useEffect(() => {
-    loadEvents();
-    loadStats();
+    loadInitialData();
   }, []);
+
+  const loadInitialData = async () => {
+    await Promise.all([
+      loadEvents(),
+      loadStats()
+    ]);
+  };
 
   const loadEvents = async () => {
     try {
+      setLoading(true);
       const eventsData = await apiService.getEvents();
-      setEvents(eventsData);
+      console.log('Events loaded:', eventsData); // Debug için
+      setEvents(Array.isArray(eventsData) ? eventsData : []);
     } catch (error) {
-      showNotification('❌ Etkinlikler yüklenemedi.', 'error');
+      console.error('Events loading failed:', error);
+      showNotification('❌ Etkinlikler yüklenemedi. Backend bağlantısını kontrol edin.', 'error');
+      setEvents([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const loadStats = () => {
-    setTimeout(() => {
-      setStats({
-        activeEvents: 12,
-        totalUsers: 247,
-        sportsCount: 8
-      });
-    }, 1000);
+  const loadStats = async () => {
+    try {
+      const statsData = await apiService.getStats();
+      console.log('Stats loaded:', statsData); // Debug için
+      setStats(statsData);
+    } catch (error) {
+      console.error('Stats loading failed:', error);
+      // Stats yüklenemezse varsayılan değerler kalsın
+    }
   };
 
   const handleJoinEvent = async (eventId) => {
     try {
       const response = await apiService.joinEvent(eventId);
+      console.log('Join response:', response); // Debug için
+      
       if (response.success) {
         showNotification('🎉 Etkinliğe başarıyla katıldınız!');
-        // Update local state
-        setEvents(prevEvents => 
-          prevEvents.map(event => 
-            event.id === eventId 
-              ? { ...event, currentParticipants: event.currentParticipants + 1, isJoined: true }
-              : event
-          )
-        );
+        await loadEvents(); // Listeyi yenile
+      } else {
+        showNotification(`❌ ${response.message || 'Katılamadı'}`, 'error');
       }
     } catch (error) {
-      showNotification('❌ Etkinliğe katılınamadı.', 'error');
+      console.error('Join event failed:', error);
+      showNotification(`❌ ${error.message || 'Etkinliğe katılınamadı'}`, 'error');
     }
   };
 
   const handleLeaveEvent = async (eventId) => {
     try {
-      showNotification('👋 Etkinlikten ayrıldınız.');
-      // Update local state
-      setEvents(prevEvents => 
-        prevEvents.map(event => 
-          event.id === eventId 
-            ? { ...event, currentParticipants: event.currentParticipants - 1, isJoined: false }
-            : event
-        )
-      );
+      const response = await apiService.leaveEvent(eventId);
+      console.log('Leave response:', response); // Debug için
+      
+      if (response.success) {
+        showNotification('👋 Etkinlikten ayrıldınız.');
+        await loadEvents(); // Listeyi yenile
+      } else {
+        showNotification(`❌ ${response.message || 'Ayrılamadı'}`, 'error');
+      }
     } catch (error) {
-      showNotification('❌ İşlem başarısız.', 'error');
+      console.error('Leave event failed:', error);
+      showNotification(`❌ ${error.message || 'Etkinlikten ayrılınamadı'}`, 'error');
     }
   };
 
@@ -90,8 +101,8 @@ export default function Home() {
             <span className="stat-label">Kayıtlı Kullanıcı</span>
           </div>
           <div className="stat-item">
-            <span className="stat-number">{stats.sportsCount}</span>
-            <span className="stat-label">Spor Dalı</span>
+            <span className="stat-number">{stats.totalEvents}</span>
+            <span className="stat-label">Toplam Etkinlik</span>
           </div>
         </div>
       </section>
@@ -100,7 +111,15 @@ export default function Home() {
         <h2 className="section-title">🔥 Popüler Etkinlikler</h2>
         
         {loading ? (
-          <div className="loading-events">Etkinlikler yükleniyor...</div>
+          <div className="loading-events">
+            <i className="fas fa-spinner fa-spin"></i> Etkinlikler yükleniyor...
+          </div>
+        ) : events.length === 0 ? (
+          <div className="loading-events">
+            <i className="fas fa-calendar-times"></i>
+            <h3>Henüz etkinlik bulunmuyor</h3>
+            <p>İlk etkinliği sen oluştur!</p>
+          </div>
         ) : (
           <div className="events-grid">
             {events.map(event => (
@@ -117,3 +136,4 @@ export default function Home() {
     </main>
   );
 }
+
