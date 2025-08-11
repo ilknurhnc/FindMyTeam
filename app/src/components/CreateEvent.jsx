@@ -28,17 +28,33 @@ export default function CreateEvent() {
     setLoading(true);
 
     try {
-      const response = await apiService.createEvent({
-        ...formData,
-        maxParticipants: parseInt(formData.maxParticipants)
-      });
+      // Tarihi UTC formatına çevir
+      const eventDate = new Date(formData.eventDate);
+      
+      const eventData = {
+        title: formData.title,
+        sportType: formData.sportType,
+        location: formData.location,
+        eventDate: eventDate.toISOString(), // ISO string formatında gönder
+        maxParticipants: parseInt(formData.maxParticipants),
+        skillLevel: formData.skillLevel,
+        description: formData.description || '' // Boşsa empty string
+      };
+
+      console.log('Form data being sent:', eventData); // DEBUG
+
+      const response = await apiService.createEvent(eventData);
+      console.log('Create event response:', response); // DEBUG
 
       if (response.success) {
         showNotification('🚀 Etkinlik başarıyla oluşturuldu!');
         setTimeout(() => navigate('/'), 1500);
+      } else {
+        showNotification(`❌ ${response.message || 'Etkinlik oluşturulamadı.'}`, 'error');
       }
     } catch (error) {
-      showNotification('❌ Etkinlik oluşturulamadı.', 'error');
+      console.error('Create event error:', error); // DEBUG
+      showNotification(`❌ ${error.message || 'Etkinlik oluşturulamadı.'}`, 'error');
     } finally {
       setLoading(false);
     }
@@ -102,6 +118,7 @@ export default function CreateEvent() {
                   name="eventDate"
                   value={formData.eventDate}
                   onChange={handleChange}
+                  min={new Date().toISOString().slice(0, 16)} // Geçmiş tarih seçilemez
                   required 
                 />
               </div>
@@ -148,9 +165,10 @@ export default function CreateEvent() {
               ></textarea>
             </div>
             
-            <button type="submit" className={`submit-btn ${loading ? 'btn-loading' : ''}`}>
+            <button type="submit" className={`submit-btn ${loading ? 'btn-loading' : ''}`} disabled={loading}>
               <span className="btn-text">
-                <i className="fas fa-rocket"></i> Etkinliği Oluştur
+                <i className="fas fa-rocket"></i> 
+                {loading ? 'Oluşturuluyor...' : 'Etkinliği Oluştur'}
               </span>
             </button>
           </form>
@@ -159,5 +177,6 @@ export default function CreateEvent() {
     </main>
   );
 }
+
 
 
