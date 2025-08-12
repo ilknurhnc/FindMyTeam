@@ -134,6 +134,11 @@ class ApiService {
   async getStats() {
     return await this.makeRequest('/stats');
   }
+
+  async getUserStats() {
+    console.log('Getting user stats...'); // Debug
+    return await this.makeRequest('/stats/user');
+  }
 }
 
 export const apiService = new ApiService();
