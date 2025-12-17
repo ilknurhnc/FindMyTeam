@@ -1,23 +1,20 @@
 # FindMyTeam — Full-Stack (Frontend + Backend)
 
 FindMyTeam is a full-stack web application concept focused on helping people find sports teammates/partners and organize activities.  
-This repository is structured as a **monorepo** with separate **backend** and **frontend** directories. :contentReference[oaicite:0]{index=0}
-
+This repository is structured as a **monorepo** with separate **backend** and **frontend** directories.
 ---
 
 ## Repository Structure
 
-- `backend/` — Backend API (C#) :contentReference[oaicite:1]{index=1}  
-- `frontend/` — Frontend web client (HTML/CSS/JavaScript) :contentReference[oaicite:2]{index=2}  
-
+- `backend/` — Backend API (C#)
+- `frontend/` — Frontend web client (HTML/CSS/JavaScript)
 ---
 
 ## Tech Stack
 
 Based on repository language breakdown:
-- **Backend:** C# :contentReference[oaicite:3]{index=3}  
-- **Frontend:** JavaScript + CSS + HTML :contentReference[oaicite:4]{index=4}  
-
+- **Backend:** C#
+- **Frontend:** JavaScript + CSS + HTML
 > Note: Exact frameworks/libraries (ASP.NET Core version, DB provider, frontend tooling) depend on the implementation inside the folders.
 
 ---
