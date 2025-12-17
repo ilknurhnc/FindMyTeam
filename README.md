@@ -125,10 +125,3 @@ Role-based access (admin/user)
 Better search/matching (filters: sport type, location, skill level)
 
 Deployment (Docker) + CI pipeline (GitHub Actions)
-
-Author
-
-Ilknur Hançer
-GitHub: https://github.com/ilknurhnc
-
-::contentReference[oaicite:5]{index=5}
